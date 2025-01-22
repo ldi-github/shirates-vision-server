@@ -10,9 +10,10 @@ struct ImageFeaturePrintClassifier {
     /**
      getImageFeaturePrintDistances
      */
-    func getImageFeaturePrintDistances(baseFeaturePrintInfo: ImageFeaturePrintInfo) async throws -> [ImageFeaturePrintInfo] {
+    func getImageFeaturePrintDistances(project: String, baseFeaturePrintInfo: ImageFeaturePrintInfo) async throws -> [ImageFeaturePrintInfo] {
 
-        var list = ImageFeaturePrintRepository.getImageFeaturePrintInfoList()
+        let repo = ImageFeaturePrintRepositoryContainer.getRepository(project: project)
+        var list = repo.getImageFeaturePrintInfoList()
         for info in list {
             try info.updateDistance(targetFeaturePrintInfo: baseFeaturePrintInfo)
         }
@@ -63,7 +64,7 @@ struct ImageFeaturePrintClassifier {
     /**
      classify
      */
-    func classify(inputFile: String, withTextMatching: Bool = false, language: String?) async throws -> ClassiryResult {
+    func classify(project: String, inputFile: String, withTextMatching: Bool = false, language: String?) async throws -> ClassiryResult {
 
         let maxCandidatesCount = 3
         
@@ -72,7 +73,9 @@ struct ImageFeaturePrintClassifier {
         sw.printInfo()
 
         let classifyResult = ClassiryResult(baseFeaturePrintInfo)
-        classifyResult.candidates = try await getImageFeaturePrintDistances(baseFeaturePrintInfo: baseFeaturePrintInfo)
+        classifyResult.candidates = try await getImageFeaturePrintDistances(
+            project: project,
+            baseFeaturePrintInfo: baseFeaturePrintInfo)
         if(classifyResult.candidates.count < 2) {
             return ClassiryResult(baseFeaturePrintInfo)
         }
@@ -80,7 +83,10 @@ struct ImageFeaturePrintClassifier {
         classifyResult.withTextMatching = withTextMatching || classifyResult.isTextMatchingRequired
 
         if(classifyResult.withTextMatching) {
-            classifyResult.candidates = classifyResult.candidates.prefix(upTo: maxCandidatesCount).map { $0 }
+            print("maxCandidatesCount: \(maxCandidatesCount)")
+            if(classifyResult.candidates.count >= maxCandidatesCount) {
+                classifyResult.candidates = classifyResult.candidates.prefix(upTo: maxCandidatesCount).map { $0 }
+            }
             try await baseFeaturePrintInfo.getTextObservations(language: language)
 
             for imageFeaturePrintInfo in classifyResult.candidates {

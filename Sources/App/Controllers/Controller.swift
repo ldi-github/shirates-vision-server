@@ -12,11 +12,14 @@ struct Controller {
      */
     static func setupImageFeaturePrintConfig(req: Request) async throws -> String {
         
+        guard let project = req.query("project") else {
+            throw ExecutionError("Parameter `project` not found.")
+        }
         guard let inputDirectory = req.query("inputDirectory") else {
             throw ExecutionError("Parameter `inputDirectory` not found.")
         }
         
-        let imageFeaturePrintConfigurator = ImageFeaturePrintConfigurator(inputDirectory: inputDirectory)
+        let imageFeaturePrintConfigurator = ImageFeaturePrintConfigurator(project: project, inputDirectory: inputDirectory)
         let result = try await imageFeaturePrintConfigurator.setupImageFeaturePrintConfig()
         print("[imageFeaturePrintConfigurator] setup complete. \(result.message)")
 
@@ -29,12 +32,16 @@ struct Controller {
      */
     static func classifyWithImageFeaturePrintOrText(req: Request) async throws -> String {
         
+        guard let project = req.query("project") else {
+            throw ExecutionError("Parameter `project` not found.")
+        }
         guard let inputFile = req.query("inputFile") else {
             throw ExecutionError("Parameter `inputFile` not found.")
         }
         guard let language = req.query("language") else {
             throw ExecutionError("Parameter `language` not found.")
         }
+        try! OCRLanguage.validateLanguage(language: language)
         
         let withTextMatching = Bool(req.query("withTextMatching") ?? "") ?? false
         
@@ -42,11 +49,20 @@ struct Controller {
 
         let classifyResult =
             try await imageFeaturePrintClassifier.classify(
+                project: project,
                 inputFile: inputFile,
                 withTextMatching: withTextMatching,
                 language: language)
 
-        if classifyResult.candidates.isEmpty { return "[]" }
+        let result = Result()
+        result.baseImageFile = classifyResult.baseFeaturePrintInfo.imageFile
+        result.diffBetweenFirstAndSecond = classifyResult.diffBetweenFirstAndSecond
+        result.textMatchingRequiredDiffThreshold = classifyResult.textMatchingRequiredDiffThreshold
+        result.withTextMatching = classifyResult.withTextMatching
+
+        if classifyResult.candidates.isEmpty {
+            return try! result.toJsonString()
+        }
 
         for r in classifyResult.candidates {
             let allTextsJoinedLength = r.allTextsJoinedLength
@@ -76,16 +92,7 @@ struct Controller {
             var textMatchingRequiredDiffThreshold:Double = Double.nan
             var withTextMatching: Bool = false
         }
-        
-        let result = Result()
-        result.baseImageFile = classifyResult.baseFeaturePrintInfo.imageFile
-        result.diffBetweenFirstAndSecond = classifyResult.diffBetweenFirstAndSecond
-        result.textMatchingRequiredDiffThreshold = classifyResult.textMatchingRequiredDiffThreshold
-        result.withTextMatching = classifyResult.withTextMatching
 
-        if(classifyResult.withTextMatching){
-            print("")
-        }
         for r in classifyResult.candidates {
             let e = Candidate()
             e.distance = r.distance
@@ -120,7 +127,10 @@ struct Controller {
         guard let input = req.query("input") else {
             throw ExecutionError("Parameter `input` not found.")
         }
-        let language = req.query("language")
+        guard let language = req.query("language") else {
+            throw ExecutionError("Parameter `language` not found.")
+        }
+        try OCRLanguage.validateLanguage(language: language)
         
         let textRecognizer = TextRecognizer(input: input, language: language)
         let result = try await textRecognizer.recognizeText()
@@ -194,7 +204,10 @@ struct Controller {
         guard let text = req.query("text") else {
             throw ExecutionError("Parameter `text` not found.")
         }
-        let language = req.query("language")
+        guard let language = req.query("language") else {
+            throw ExecutionError("Parameter `language` not found.")
+        }
+        try! OCRLanguage.validateLanguage(language: language)
 
         let rectangleDetector = RectangleDetector(input: input)
         let result = try await rectangleDetector.detectRectanglesIncludingText(text: text, language: language)

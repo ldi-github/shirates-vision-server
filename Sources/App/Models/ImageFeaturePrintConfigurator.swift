@@ -6,10 +6,11 @@ import AppKit
 
 @available(macOS 15.0, *)
 struct ImageFeaturePrintConfigurator {
+    let project: String
     let inputDirectory: String
-    let language: String? = nil
     
-    init(inputDirectory: String) {
+    init(project: String, inputDirectory: String) {
+        self.project = project
         self.inputDirectory = inputDirectory
     }
    
@@ -22,7 +23,8 @@ struct ImageFeaturePrintConfigurator {
             throw ExecutionError("Directory not found. (\(inputDirectory))")
         }
 
-        ImageFeaturePrintRepository.clear()
+        let repository = ImageFeaturePrintRepositoryContainer.getRepository(project: project)
+        repository.clear()
 
         let inputImageFiles = try getAllFilesRecursively(at: inputDirectory)
         
@@ -36,11 +38,11 @@ struct ImageFeaturePrintConfigurator {
             let fp = try await getFeaturePrintObservation(file: inputImageFile, cgImage: image)
             let name = inputImageFile.name()
         
-            ImageFeaturePrintRepository.dictionary[name] = fp
+            repository.dictionary[name] = fp
         }
 
-        let count = ImageFeaturePrintRepository.dictionary.keys.count
-        let result = Result(message: "Initialized. (image count: \(count))")
+        let count = repository.dictionary.keys.count
+        let result = Result(message: "ImageFeaturePrintRepository initialized. (image count: \(count))")
         return result
     }
 

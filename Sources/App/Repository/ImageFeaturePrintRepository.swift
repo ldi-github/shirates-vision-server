@@ -5,14 +5,14 @@ import Foundation
 @available(macOS 15.0, *)
 class ImageFeaturePrintRepository {
     
-    static var dictionary: [String: ImageFeaturePrintInfo] = [:]
+    var dictionary: [String: ImageFeaturePrintInfo] = [:]
 
-    static func clear(){
+    func clear(){
     
         dictionary.removeAll()
     }
     
-    static func getImageFeaturePrintInfo(name: String) -> ImageFeaturePrintInfo? {
+    func getImageFeaturePrintInfo(name: String) -> ImageFeaturePrintInfo? {
         
         if dictionary.keys.contains(name) {
             return dictionary[name]
@@ -20,7 +20,7 @@ class ImageFeaturePrintRepository {
         return nil
     }
     
-    static func getImageFeaturePrintInfoList() -> [ImageFeaturePrintInfo] {
+    func getImageFeaturePrintInfoList() -> [ImageFeaturePrintInfo] {
         
         return dictionary.values.compactMap { $0 }
     }

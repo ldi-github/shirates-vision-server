@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "ImageFeaturePrintConfigurator.setupImageFeaturePrintConfig():ImageFeaturePrintConfigurator.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "result.message">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "static Controller.recognizeText(req:):Controller.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "req.query(&quot;language&quot;)">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "static Controller.classifyWithImageFeaturePrintOrText(req:):Controller.swift">
+      </ContextState>
+      <ContextState
+         contextName = "closure #1 in static OCRLanguage.supportedLanguages.getter:OCRLanguage.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ImageFeaturePrintClassifier.getImageFeaturePrintDistances(project:baseFeaturePrintInfo:):ImageFeaturePrintClassifier.swift">
+      </ContextState>
+      <ContextState
+         contextName = "static OCRLanguage.supportedLanguages.getter:OCRLanguage.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "">
+            </PersistentString>
+            <PersistentString
+               value = "_supportedLanguages[0]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "OCRLanguage.Language.init(localeLangugage:):OCRLanguage.swift">
+      </ContextState>
+      <ContextState
+         contextName = "OCRLanguage.Language.init(language:):OCRLanguage.swift">
+      </ContextState>
+      <ContextState
+         contextName = "Locale.Language.localeString.getter:OCRLanguage.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "self.script">
+            </PersistentString>
+            <PersistentString
+               value = "self.debugDescription">
+            </PersistentString>
+            <PersistentString
+               value = "self.components.script">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "static Controller.setupImageFeaturePrintConfig(req:):Controller.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "ImageFeaturePrintRepositoryContainer.dictionary">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "String.getLocale():OCRLanguage.swift">
+      </ContextState>
+      <ContextState
+         contextName = "static OCRLanguage.isSupported(language:):OCRLanguage.swift">
+         <PersistentStrings>
+            <PersistentString
+               value = "list[0].script">
+            </PersistentString>
+            <PersistentString
+               value = "&quot;\(lang)&quot;">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "ImageFeaturePrintClassifier.classify(project:inputFile:withTextMatching:language:):ImageFeaturePrintClassifier.swift">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
