@@ -40,7 +40,7 @@ struct ImageFeaturePrintClassifier {
         }
         
         var diffBetweenFirstAndSecond: Double {
-            if second == nil { return Double.nan }
+            if second == nil { return Double.greatestFiniteMagnitude }
             return abs(second!.distance - first!.distance)
         }
         

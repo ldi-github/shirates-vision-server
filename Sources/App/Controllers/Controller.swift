@@ -74,7 +74,7 @@ struct Controller {
         classifyResult.sortCandidatesByDistance()
         
         class Candidate: Encodable {
-            var distance: Double = Double.nan
+            var distance: Double = Double.greatestFiniteMagnitude
             var matchedTexts: [String]? = nil
             var allTexts: [String]? = nil
             var name: String = ""
@@ -86,10 +86,10 @@ struct Controller {
         class Result: Encodable {
             var baseImageFile: String = ""
             var candidates: [Candidate] = []
-            var firstDistance: Double = Double.nan
-            var secondDistance: Double = Double.nan
-            var diffBetweenFirstAndSecond: Double = Double.nan
-            var textMatchingRequiredDiffThreshold:Double = Double.nan
+            var firstDistance: Double = Double.greatestFiniteMagnitude
+            var secondDistance: Double = Double.greatestFiniteMagnitude
+            var diffBetweenFirstAndSecond: Double = Double.greatestFiniteMagnitude
+            var textMatchingRequiredDiffThreshold:Double = Double.greatestFiniteMagnitude
             var withTextMatching: Bool = false
         }
 
