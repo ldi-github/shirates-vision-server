@@ -3,13 +3,22 @@
 import Foundation
 
 @available(macOS 15.0, *)
-class ImageFeaturePrintRepositoryContainer {
+actor ImageFeaturePrintRepositoryContainer {
 
-    nonisolated(unsafe) static var dictionary: [String: ImageFeaturePrintRepository] = [:]
+    private static var dictionary: [String: ImageFeaturePrintRepository] = [:]
 
     static func clear(){
         
         dictionary.removeAll()
+    }
+    
+    static func getDictionary() -> [String: ImageFeaturePrintRepository] {
+        
+        var dic = [String: ImageFeaturePrintRepository]()
+        for (k, v) in dictionary {
+            dic[k] = v
+        }
+        return dic
     }
     
     static func getRepository(project: String) -> ImageFeaturePrintRepository {

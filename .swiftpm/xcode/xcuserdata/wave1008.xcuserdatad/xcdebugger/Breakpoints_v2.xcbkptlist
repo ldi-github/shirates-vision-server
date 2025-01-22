@@ -18,36 +18,6 @@
             endingLineNumber = "46"
             landmarkName = "setupImageFeaturePrintConfig()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "4FFD3B37-4472-4BC0-94D7-CEE57F25C4BB - 6f90d2ee8c634749"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(1) suspend resume partial function for App.ImageFeaturePrintConfigurator.setupImageFeaturePrintConfig() async throws -&gt; App.ImageFeaturePrintConfigurator.Result"
-                  moduleName = "App"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/wave1008/github/ldi-github/shirates-vision-server/Sources/App/Models/ImageFeaturePrintConfigurator.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "46"
-                  endingLineNumber = "46">
-               </Location>
-               <Location
-                  uuid = "4FFD3B37-4472-4BC0-94D7-CEE57F25C4BB - e4b7ce807ef70b57"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(3) suspend resume partial function for App.ImageFeaturePrintConfigurator.setupImageFeaturePrintConfig() async throws -&gt; App.ImageFeaturePrintConfigurator.Result"
-                  moduleName = "App"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/wave1008/github/ldi-github/shirates-vision-server/Sources/App/Models/ImageFeaturePrintConfigurator.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "46"
-                  endingLineNumber = "46">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

@@ -22,18 +22,6 @@ func getJson(list: [String]) -> String {
     return json
 }
 
-func runSync(_ c: @escaping @Sendable () async -> String) throws -> String {
-
-    let semaphore = DispatchSemaphore(value: 0)
-    var r: String? = nil
-    Task {
-        r = await c()
-        semaphore.signal()
-    }
-    semaphore.wait()
-    return r!
-}
-
 extension String {
     func name() -> String {
         return (self as NSString).deletingPathExtension.components(separatedBy: "/").last ?? ""
