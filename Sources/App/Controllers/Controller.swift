@@ -41,7 +41,7 @@ struct Controller {
         guard let language = req.query("language") else {
             throw ExecutionError("Parameter `language` not found.")
         }
-        try! OCRLanguage.validateLanguage(language: language)
+        try OCRLanguage.validateLanguage(language: language)
         
         let withTextMatching = Bool(req.query("withTextMatching") ?? "") ?? false
         
