@@ -14,10 +14,10 @@ func routes(_ app: Application) throws {
         return result
     }
 
-    app.get("ImageFeaturePrintClassifier","classifyWithImageFeaturePrintOrText") { req async throws -> String in
+    app.get("ScreenClassifier","classifyScreen") { req async throws -> String in
         
-        let sw = Stopwatch("ImageFeaturePrintClassifier/classifyWithImageFeaturePrintOrText")
-        let result = try await Controller.classifyWithImageFeaturePrintOrText(req: req)
+        let sw = Stopwatch("ScreenClassifier/classifyScreen")
+        let result = try await Controller.classifyScreen(req: req)
         sw.printInfo()
         return result
     }
