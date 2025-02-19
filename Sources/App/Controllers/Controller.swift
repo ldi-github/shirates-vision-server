@@ -26,97 +26,43 @@ struct Controller {
         let jsonString = try result.toJsonString()
         return jsonString
     }
-    
+
     /**
-     classifyWithImageFeaturePrintOrText
+     classifyScreen
      */
-    static func classifyWithImageFeaturePrintOrText(req: Request) async throws -> String {
-        
-        guard let project = req.query("project") else {
-            throw ExecutionError("Parameter `project` not found.")
-        }
+    static func classifyScreen(req: Request) async throws -> String {
+
         guard let inputFile = req.query("inputFile") else {
             throw ExecutionError("Parameter `inputFile` not found.")
         }
-        guard let language = req.query("language") else {
-            throw ExecutionError("Parameter `language` not found.")
+        guard let mlmodel = req.query("mlmodel") else {
+            throw ExecutionError("Parameter `mlmodel` not found.")
         }
-        try OCRLanguage.validateLanguage(language: language)
-        
-        let withTextMatching = Bool(req.query("withTextMatching") ?? "") ?? false
-        
-        let imageFeaturePrintClassifier = ImageFeaturePrintClassifier()
 
-        let classifyResult =
-            try await imageFeaturePrintClassifier.classify(
-                project: project,
-                inputFile: inputFile,
-                withTextMatching: withTextMatching,
-                language: language)
-
+        let screenClassifier = try ScreenClassifier(input: inputFile, mlmodel: mlmodel)
+        
+        let classifyResult = try screenClassifier.classifyScreen()
+        
         let result = Result()
-        result.baseImageFile = classifyResult.baseFeaturePrintInfo.imageFile
-        result.diffBetweenFirstAndSecond = classifyResult.diffBetweenFirstAndSecond
-        result.textMatchingRequiredDiffThreshold = classifyResult.textMatchingRequiredDiffThreshold
-        result.withTextMatching = classifyResult.withTextMatching
-
+        result.baseImageFile = screenClassifier.input
+        
         if classifyResult.candidates.isEmpty {
             return try! result.toJsonString()
         }
 
         for r in classifyResult.candidates {
-            let allTextsJoinedLength = r.allTextsJoinedLength
-            if allTextsJoinedLength > 0 {
-                r.textDistance = Double(r.matchedTextsJoinedLength) / Double(allTextsJoinedLength)
-            }
-            r.refresh()
+            result.candidates.append(r)
         }
-        classifyResult.sortCandidatesByDistance()
-        
-        class Candidate: Encodable {
-            var distance: Double = Double.greatestFiniteMagnitude
-            var matchedTexts: [String]? = nil
-            var allTexts: [String]? = nil
-            var name: String = ""
-            var imageFile: String = ""
-            var textDistance: Double? = nil
-            var matchedTextJoinedLength: Int? = nil
-            var allTextJoinedLength: Int? = nil
-        }
-        class Result: Encodable {
-            var baseImageFile: String = ""
-            var candidates: [Candidate] = []
-            var firstDistance: Double = Double.greatestFiniteMagnitude
-            var secondDistance: Double = Double.greatestFiniteMagnitude
-            var diffBetweenFirstAndSecond: Double = Double.greatestFiniteMagnitude
-            var textMatchingRequiredDiffThreshold:Double = Double.greatestFiniteMagnitude
-            var withTextMatching: Bool = false
-        }
-
-        for r in classifyResult.candidates {
-            let e = Candidate()
-            e.distance = r.distance
-            e.name = r.name
-            e.imageFile = r.imageFile
-            if(classifyResult.withTextMatching) {
-                e.textDistance = r.textDistance
-                e.matchedTexts = r.matchedTexts
-                e.allTexts = r.allTexts
-                e.matchedTextJoinedLength = r.matchedTextsJoinedLength
-                e.allTextJoinedLength = r.allTextsJoinedLength
-            }
-            result.candidates.append(e)
-        }
-        if(result.candidates.count > 0) {
-            result.firstDistance = result.candidates[0].distance
-        }
-        if(result.candidates.count > 1) {
-            result.secondDistance = result.candidates[1].distance
-        }
-        result.diffBetweenFirstAndSecond = abs(result.firstDistance - result.secondDistance)
+        result.candidates.sort { $0.confidence > $1.confidence }
 
         let jsonString = try result.toJsonString()
         return jsonString
+
+        
+        class Result: Encodable {
+            var baseImageFile: String = ""
+            var candidates: [ScreenClassifier.Candidate] = []
+        }
     }
     
     /**
