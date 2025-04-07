@@ -182,4 +182,23 @@ struct Controller {
         return jsonString
     }
 
+    /**
+     getDistance
+     */
+    static func getDistance(req: Request) async throws -> String {
+
+        guard let imageFile1 = req.query("imageFile1") else {
+            throw ExecutionError("Parameter `imageFile1` not found.")
+        }
+        guard let imageFile2 = req.query("imageFile2") else {
+            throw ExecutionError("Parameter `imageFile2` not found.")
+        }
+
+        let result = try await ImageFeaturePrintComparator()
+            .getDistance(imageFile1: imageFile1, imageFile2: imageFile2)
+        
+        let jsonString = try result.toJsonString()
+        
+        return jsonString
+    }
 }

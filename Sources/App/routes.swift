@@ -45,6 +45,14 @@ func routes(_ app: Application) throws {
         sw.printInfo()
         return result
     }
+    
+    app.get("ImageFeaturePrintComparator", "getDistance") { req async throws -> String in
+    
+        let sw = Stopwatch("ImageFeaturePrintComparator/getDistance")
+        let result = try await Controller.getDistance(req: req)
+        sw.printInfo()
+        return result
+    }
 
     app.get("RectangleDetector","detectRectangles") { req async throws -> String in
         
