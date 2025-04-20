@@ -22,6 +22,14 @@ func routes(_ app: Application) throws {
         return result
     }
 
+    app.get("ScreenClassifier","classifyScreenWithShard") { req async throws -> String in
+        
+        let sw = Stopwatch("ScreenClassifier/classifyScreen")
+        let result = try await Controller.classifyScreenWithShard(req: req)
+        sw.printInfo()
+        return result
+    }
+
     app.get("TextRecognizer","recognizeText") { req async throws -> String in
         
         let sw = Stopwatch("TextRecognizer/recognizeText")
@@ -37,7 +45,15 @@ func routes(_ app: Application) throws {
         sw.printInfo()
         return result
     }
-    
+
+    app.get("ImageClassifier","classifyImageWithShard") { req async throws -> String in
+        
+        let sw = Stopwatch("ImageClassifier/classifyImageWithShard")
+        let result = try await Controller.classifyImageWithShard(req: req)
+        sw.printInfo()
+        return result
+    }
+
     app.get("ImageFeaturePrintMatcher","matchWithTemplate") { req async throws -> String in
 
         let sw = Stopwatch("ImageFeaturePrintMatcher/matchWithTemplate")
