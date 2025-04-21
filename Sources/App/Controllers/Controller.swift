@@ -83,8 +83,6 @@ struct Controller {
             throw ExecutionError("Parameter `shardCount` must be an integer.")
         }
         
-        let contents = try FileManager.default.contentsOfDirectory(atPath: classifierDirectory)
-
         let result = Result()
 
         for shardID in 1...shardCountInt {
@@ -97,7 +95,8 @@ struct Controller {
             
             let classifyResult = try screenClassifier.classifyScreen()
             
-            var resultItem = ResultItem()
+            let resultItem = ResultItem()
+            resultItem.shardID = shardID
             result.items.append(resultItem)
 
             resultItem.baseImageFile = screenClassifier.input
@@ -123,6 +122,7 @@ struct Controller {
             var baseImageFile: String = ""
             var candidates: [ScreenClassifier.Candidate] = []
             var errorInfo: String = ""
+            var shardID: Int = 0
         }
     }
 
@@ -183,14 +183,12 @@ struct Controller {
             throw ExecutionError("Parameter `shardCount` must be an integer.")
         }
 
-        let contents = try FileManager.default.contentsOfDirectory(atPath: classifierDirectory)
-        
         let result = Result()
         
         for shardID in 1...shardCountInt {
             let mlmodel = classifierDirectory + "/\(shardID)/\(shardID).mlmodel"
             
-            let imageClassifier = try ImageClassifier(input: input, mlmodel: mlmodel)
+            let imageClassifier = try ImageClassifier(input: input, mlmodel: mlmodel, shardID: shardID)
             let resultItem = try imageClassifier.classifyImage()
             result.items.append(resultItem)
         }

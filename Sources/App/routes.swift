@@ -14,13 +14,13 @@ func routes(_ app: Application) throws {
         return result
     }
 
-    app.get("ScreenClassifier","classifyScreen") { req async throws -> String in
-        
-        let sw = Stopwatch("ScreenClassifier/classifyScreen")
-        let result = try await Controller.classifyScreen(req: req)
-        sw.printInfo()
-        return result
-    }
+//    app.get("ScreenClassifier","classifyScreen") { req async throws -> String in
+//        
+//        let sw = Stopwatch("ScreenClassifier/classifyScreen")
+//        let result = try await Controller.classifyScreen(req: req)
+//        sw.printInfo()
+//        return result
+//    }
 
     app.get("ScreenClassifier","classifyScreenWithShard") { req async throws -> String in
         
@@ -38,13 +38,13 @@ func routes(_ app: Application) throws {
         return result
     }
     
-    app.get("ImageClassifier","classifyImage") { req async throws -> String in
-
-        let sw = Stopwatch("ImageClassifier/classifyImage")
-        let result = try await Controller.classifyImage(req: req)
-        sw.printInfo()
-        return result
-    }
+//    app.get("ImageClassifier","classifyImage") { req async throws -> String in
+//
+//        let sw = Stopwatch("ImageClassifier/classifyImage")
+//        let result = try await Controller.classifyImage(req: req)
+//        sw.printInfo()
+//        return result
+//    }
 
     app.get("ImageClassifier","classifyImageWithShard") { req async throws -> String in
         

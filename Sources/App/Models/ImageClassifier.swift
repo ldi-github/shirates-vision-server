@@ -7,13 +7,15 @@ import AppKit
 struct ImageClassifier {
     let input: String
     let mlmodel: String
+    let shardID: Int
     
-    init(input: String, mlmodel: String?) throws {
+    init(input: String, mlmodel: String?, shardID: Int = 0) throws {
         if mlmodel == nil {
             throw ExecutionError("mlmodel is not specified")
         }
         self.input = input
         self.mlmodel = mlmodel!
+        self.shardID = shardID
     }
     
     func classifyImage() throws -> Result {
@@ -41,8 +43,9 @@ struct ImageClassifier {
         }
         
         let result = Result()
+        result.shardID = shardID
         for o in observations {
-            let e = Candidate(identifier: o.identifier, confidence: o.confidence)
+            let e = Candidate(identifier: o.identifier, confidence: o.confidence, shardID: shardID)
             result.candidates.append(e)
         }
         return result
@@ -50,6 +53,7 @@ struct ImageClassifier {
     
     class Result: Codable {
         
+        var shardID: Int = 0
         var candidates: [Candidate] = []
     }
     
@@ -57,10 +61,12 @@ struct ImageClassifier {
         
         let identifier: String
         let confidence: VNConfidence
+        let shardID: Int
         
-        init(identifier: String, confidence: VNConfidence) {
+        init(identifier: String, confidence: VNConfidence, shardID: Int = 0) {
             self.identifier = identifier
             self.confidence = confidence
+            self.shardID = shardID
         }
     }
 }
