@@ -64,7 +64,68 @@ struct Controller {
             var candidates: [ScreenClassifier.Candidate] = []
         }
     }
-    
+
+    /**
+     classifyScreenWithShard
+     */
+    static func classifyScreenWithShard(req: Request) async throws -> String {
+        
+        guard let inputFile = req.query("inputFile") else {
+            throw ExecutionError("Parameter `inputFile` not found.")
+        }
+        guard let classifierDirectory = req.query("classifierDirectory") else {
+            throw ExecutionError("Parameter `classifierDirectory` not found.")
+        }
+        guard let shardCount = req.query("shardCount") else {
+            throw ExecutionError("Parameter `shardCount` not found.")
+        }
+        guard let shardCountInt = Int(shardCount) else {
+            throw ExecutionError("Parameter `shardCount` must be an integer.")
+        }
+        
+        let result = Result()
+
+        for shardID in 1...shardCountInt {
+            let mlmodel = classifierDirectory + "/\(shardID)/\(shardID).mlmodel"
+            if(FileManager.default.fileExists(atPath: mlmodel) == false){
+                continue
+            }
+
+            let screenClassifier = try ScreenClassifier(input: inputFile, mlmodel: mlmodel)
+            
+            let classifyResult = try screenClassifier.classifyScreen()
+            
+            let resultItem = ResultItem()
+            resultItem.shardID = shardID
+            result.items.append(resultItem)
+
+            resultItem.baseImageFile = screenClassifier.input
+
+            if classifyResult.candidates.isEmpty {
+                resultItem.errorInfo = try! result.toJsonString()
+            }
+
+            for r in classifyResult.candidates {
+                resultItem.candidates.append(r)
+            }
+            resultItem.candidates.sort { $0.confidence > $1.confidence }
+        }
+        
+        let jsonString = try result.toJsonString()
+        return jsonString
+
+        class Result: Encodable {
+            var items: [ResultItem] = []
+        }
+        
+        class ResultItem: Encodable {
+            var baseImageFile: String = ""
+            var candidates: [ScreenClassifier.Candidate] = []
+            var errorInfo: String = ""
+            var shardID: Int = 0
+        }
+    }
+
     /**
      recognizeText
      */
@@ -103,7 +164,43 @@ struct Controller {
         let jsonString = try result.toJsonString()
         return jsonString
     }
-    
+
+    /**
+     classifyImageWithShard
+     */
+    static func classifyImageWithShard(req: Request) async throws -> String {
+        
+        guard let input = req.query("input") else {
+            throw ExecutionError("Parameter `input` not found.")
+        }
+        guard let classifierDirectory = req.query("classifierDirectory") else {
+            throw ExecutionError("Parameter `classifierDirectory` not found.")
+        }
+        guard let shardCount = req.query("shardCount") else {
+            throw ExecutionError("Parameter `shardCount` not found.")
+        }
+        guard let shardCountInt = Int(shardCount) else {
+            throw ExecutionError("Parameter `shardCount` must be an integer.")
+        }
+
+        let result = Result()
+        
+        for shardID in 1...shardCountInt {
+            let mlmodel = classifierDirectory + "/\(shardID)/\(shardID).mlmodel"
+            
+            let imageClassifier = try ImageClassifier(input: input, mlmodel: mlmodel, shardID: shardID)
+            let resultItem = try imageClassifier.classifyImage()
+            result.items.append(resultItem)
+        }
+        
+        let jsonString = try result.toJsonString()
+        return jsonString
+
+        class Result: Encodable {
+            var items: [ImageClassifier.Result] = []
+        }
+    }
+
     /**
      detectRectangles
      */

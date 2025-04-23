@@ -14,10 +14,18 @@ func routes(_ app: Application) throws {
         return result
     }
 
-    app.get("ScreenClassifier","classifyScreen") { req async throws -> String in
+//    app.get("ScreenClassifier","classifyScreen") { req async throws -> String in
+//        
+//        let sw = Stopwatch("ScreenClassifier/classifyScreen")
+//        let result = try await Controller.classifyScreen(req: req)
+//        sw.printInfo()
+//        return result
+//    }
+
+    app.get("ScreenClassifier","classifyScreenWithShard") { req async throws -> String in
         
         let sw = Stopwatch("ScreenClassifier/classifyScreen")
-        let result = try await Controller.classifyScreen(req: req)
+        let result = try await Controller.classifyScreenWithShard(req: req)
         sw.printInfo()
         return result
     }
@@ -30,14 +38,22 @@ func routes(_ app: Application) throws {
         return result
     }
     
-    app.get("ImageClassifier","classifyImage") { req async throws -> String in
+//    app.get("ImageClassifier","classifyImage") { req async throws -> String in
+//
+//        let sw = Stopwatch("ImageClassifier/classifyImage")
+//        let result = try await Controller.classifyImage(req: req)
+//        sw.printInfo()
+//        return result
+//    }
 
-        let sw = Stopwatch("ImageClassifier/classifyImage")
-        let result = try await Controller.classifyImage(req: req)
+    app.get("ImageClassifier","classifyImageWithShard") { req async throws -> String in
+        
+        let sw = Stopwatch("ImageClassifier/classifyImageWithShard")
+        let result = try await Controller.classifyImageWithShard(req: req)
         sw.printInfo()
         return result
     }
-    
+
     app.get("ImageFeaturePrintMatcher","matchWithTemplate") { req async throws -> String in
 
         let sw = Stopwatch("ImageFeaturePrintMatcher/matchWithTemplate")
