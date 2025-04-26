@@ -187,10 +187,11 @@ struct Controller {
         
         for shardID in 1...shardCountInt {
             let mlmodel = classifierDirectory + "/\(shardID)/\(shardID).mlmodel"
-            
-            let imageClassifier = try ImageClassifier(input: input, mlmodel: mlmodel, shardID: shardID)
-            let resultItem = try imageClassifier.classifyImage()
-            result.items.append(resultItem)
+            if(FileManager.default.fileExists(atPath: mlmodel)){
+                let imageClassifier = try ImageClassifier(input: input, mlmodel: mlmodel, shardID: shardID)
+                let resultItem = try imageClassifier.classifyImage()
+                result.items.append(resultItem)
+            }
         }
         
         let jsonString = try result.toJsonString()
