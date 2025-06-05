@@ -8,10 +8,12 @@ import AppKit
 struct TextRecognizer {
     let input: String
     let language: String?
+    let customWordsFile: String?
     
-    init(input: String, language: String? = nil) {
+    init(input: String, language: String? = nil, customWordsFile: String? = nil) {
         self.input = input
         self.language = language
+        self.customWordsFile = customWordsFile
     }
     
     /**
@@ -24,9 +26,14 @@ struct TextRecognizer {
         }
         
         var request = RecognizeTextRequest()
+        request.recognitionLevel = .accurate
 
         if(language != nil) {
             request.recognitionLanguages[0] = Locale.Language(identifier: language!)
+        }
+        if(customWordsFile != nil) {
+            request.usesLanguageCorrection = true
+            request.customWords = try CustomWordsRepository.getCustomWords(file: customWordsFile!)
         }
         
         let image = getCGImage(path: input)

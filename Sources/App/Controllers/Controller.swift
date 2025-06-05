@@ -137,9 +137,11 @@ struct Controller {
         guard let language = req.query("language") else {
             throw ExecutionError("Parameter `language` not found.")
         }
+        let customWordsFile = req.query("customWordsFile")
+            
         try OCRLanguage.validateLanguage(language: language)
         
-        let textRecognizer = TextRecognizer(input: input, language: language)
+        let textRecognizer = TextRecognizer(input: input, language: language, customWordsFile: customWordsFile)
         let result = try await textRecognizer.recognizeText()
         
         let jsonString = try result.toJsonString()
@@ -251,10 +253,12 @@ struct Controller {
         guard let language = req.query("language") else {
             throw ExecutionError("Parameter `language` not found.")
         }
+        let customWordsFile = req.query("customWordsFile")
+
         try! OCRLanguage.validateLanguage(language: language)
 
         let rectangleDetector = RectangleDetector(input: input)
-        let result = try await rectangleDetector.detectRectanglesIncludingText(text: text, language: language)
+        let result = try await rectangleDetector.detectRectanglesIncludingText(text: text, language: language, customWordsFile: customWordsFile)
         
         let jsonString = try result.toJsonString()
         return jsonString
