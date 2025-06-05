@@ -91,7 +91,8 @@ struct RectangleDetector {
      */
     func detectRectanglesIncludingText(
         text: String,
-        language: String?
+        language: String?,
+        customWordsFile: String?
     ) async throws -> ResultWithText {
         
         if(!FileManager.default.fileExists(atPath: input)){
@@ -99,7 +100,7 @@ struct RectangleDetector {
         }
 
         let rectangleResult = try await detectRectangles()
-        let textResult = try await TextRecognizer(input: input, language: language).recognizeText()
+        let textResult = try await TextRecognizer(input: input, language: language, customWordsFile: customWordsFile).recognizeText()
         
         let result = ResultWithText(text: text, language: language)
         let firstCandidate = textResult.candidates.first { $0.text.lowercased().contains(text.lowercased()) }

@@ -7,7 +7,7 @@ actor ImageFeaturePrintRepositoryContainer {
 
     private static var dictionary: [String: ImageFeaturePrintRepository] = [:]
 
-    static func clear(){
+    static func clear() {
         
         dictionary.removeAll()
     }
